@@ -30,9 +30,7 @@ const tokenSchema = new Schema({
 async function sendResetEmail(email, name, token, id){
     try {
      let mail =  await mailSender(email, name, 'Password Reset', `<p>This email is sent in response to a password reset request for ${email}</p>
-            <p>Click this link for resetting your account <a href="https://login-liard-six.vercel.app
-reset/${id}/${token}">https://login-liard-six.vercel.app
-reset/${id}/${token}</a></p>
+            <p>Click this link for <a href="https://3000-hieser21-mergetest-dvdx33risoy.ws-us105.gitpod.io/reset/${id}/${token}">resetting</a> your account </p>
         `)
 
         console.log ("Reset mail sent ", mail );

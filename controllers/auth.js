@@ -69,12 +69,14 @@ exports.signup = async (req, res) => {
         }
         let token = jwt.sign(payload,
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "2 days" }
         )
         const User = await user.create({
             name, email, password: hashedPassword, role: "Visitor", authType: 'login', token
         })
-
+        let date = Date.now() + 172800000
+        let expiry = new Date(date)
+        res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
         res.header('Access-Control-Allow-Origin', "*")
         return res.status(200).json({
             success: true,
@@ -126,7 +128,7 @@ exports.login = async (req, res) => {
             //if password matched
             let token = jwt.sign(payload,
                 process.env.JWT_SECRET,
-                { expiresIn: "1d" }
+                { expiresIn: "2 days" }
             )
             User = User.toObject()
             if (User.authType == 'google') {
@@ -140,6 +142,9 @@ exports.login = async (req, res) => {
                 httpOnly: true  //It will make cookie not accessible on client side -> good way to keep hackers away
 
             }
+            let date = Date.now() + 172800000
+            let expiry = new Date(date)
+            res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
             res.header('Access-Control-Allow-Origin', "*")
             res.status(200).json({
                 success: true,
@@ -191,9 +196,16 @@ exports.gauth = async (req, res) => {
             const otpPayload = { email, name, otp };
 
             const otpBody = await OTP.create(otpPayload);
-           
+            const payload = {
+                email: email,
+                name: name,
+                role: 'Visitor'
+            }
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "2 days"});
             console.log('OTP Body ', otpBody)
-            res.cookie('token', token, { maxAge: expirationDate, httpOnly: true, withCredentials: true })
+            let date = Date.now() + 172800000
+            let expiry = new Date(date)
+            res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
             return res.status(200).json({
                 success: true,
                 User: {
@@ -213,7 +225,7 @@ exports.gauth = async (req, res) => {
             id: User._id,
             role: User.role
         }
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1 day'});
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "2 days"});
         
             User.token = token
 
@@ -221,7 +233,9 @@ exports.gauth = async (req, res) => {
             return res.status(403).json({ success: false, message: "Account uses User-Password system for sign in" })
 
         }
-        res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=Tue Oct 10 2023 00:00:00`)
+        let date = Date.now() + 172800000
+        let expiry = new Date(date)
+        res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
         return res.status(200).json({
             success: true,
             User,
@@ -259,7 +273,7 @@ exports.phoneRegister = async (req, res) => {
             }
             let token = jwt.sign(payload,
                 process.env.JWT_SECRET,
-                { expiresIn: "1d" }
+                { expiresIn: "2 days" }
             )
         let newUser = await user.create({ phone, email: "[placeholder]", name, role: 'Visitor', authType: 'phone', password: "[placeholder]", token })
         console.log(newUser)
@@ -282,6 +296,9 @@ exports.phoneRegister = async (req, res) => {
 
         const otpBody = await OTP.create(otpPayload);
         console.log('OTP Body ', otpBody)
+        let date = Date.now() + 172800000
+        let expiry = new Date(date)
+        res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
         return res.status(200).json({
             success: true,
             User: newUser,
@@ -308,7 +325,7 @@ exports.phoneLogin = async (req, res) => {
     if (User.authType == 'phone') {
         let token = jwt.sign(payload,
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "2 days" }
         )
         User.token = token
 
@@ -336,6 +353,9 @@ exports.phoneLogin = async (req, res) => {
     const otpBody = await OTP.create(otpPayload);
 
     console.log('OTP Body ', otpBody)
+    let date = Date.now() + 172800000
+    let expiry = new Date(date)
+    res.header('Set-Cookie', `token = ${token}; HttpOnly; Expires=${expiry}`)
     return res.status(200).json({
         success: true,
         User,

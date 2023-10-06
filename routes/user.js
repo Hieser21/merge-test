@@ -14,7 +14,7 @@ const {auth, isStudent, isAdmin} = require('../middlewares/authMiddle')
 router.post('/login', login)
 router.post('/signup', signup)
 
-router.post('/otp', otp)
+router.post('/otp-code', otp)
 
 router.post('/gauth', gauth)
 router.post('/phone/register', phoneRegister);

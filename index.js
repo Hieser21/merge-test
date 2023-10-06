@@ -20,11 +20,26 @@ const user = require('./routes/user')
 
 
 app.use(user)
+let indexPath = path.join(__dirname, 'build/index.html')
 app.get('/',  (req,res) => {
-    res.sendFile(__dirname + '/build/index.html')
+    res.sendFile(indexPath)
 })
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build/index.html'))
+    res.sendFile(indexPath)
+})
+app.get('/otp', (req, res) => {
+    res.sendFile(indexPath)
+})
+app.get('/register', (req, res) => {
+    res.sendFile(indexPath)
+})
+
+app.get('/forgot-password', (req, res) => {
+    res.sendFile(indexPath)
+})
+
+app.get('/reset/:userId/:token', (req, res) => {
+    res.sendFile(indexPath)
 })
 
 app.listen(PORT, ()=>{
